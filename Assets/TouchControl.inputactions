@@ -1,0 +1,34 @@
+{
+    "name": "TouchControl",
+    "maps": [
+        {
+            "name": "Touch",
+            "id": "574fe2db-2cd6-4f07-9457-f1f3eeb64ed4",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "PassThrough",
+                    "id": "11f51102-8bab-4794-8b6b-ecfcaea144be",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "df6c836d-c0b6-4bb5-8e3d-653fa06548df",
+                    "path": "<Touchscreen>/primaryTouch/delta/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
