@@ -8,6 +8,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float speed = 5f;
     [SerializeField] private float life = 1f;
     private Rigidbody2D rb;
+    [SerializeField] private GameObject explosion;
 
     // Update is called once per frame
     private void Awake()
@@ -30,6 +31,7 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Instantiate(explosion, transform.position, Quaternion.identity);
         Destroy(collision.gameObject);
         Destroy(gameObject);
     }

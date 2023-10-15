@@ -4,25 +4,34 @@ using UnityEngine;
 
 public class Asteroid : MonoBehaviour
 {
-    [SerializeField] private GameObject explosion;
+    
     [SerializeField] private float moveSpeed = 1;
     [SerializeField] private float rotationSpeed = 1;
     private BoxCollider2D boxCollider;
+    [SerializeField] private int points = 1;
+    private float _endPoint = -4f;
 
     private void Awake()
     {
         boxCollider=GetComponent<BoxCollider2D>();
     }
+
+    private void Start()
+    {
+        Vector2 downUp = GameManager.Instance.downUp;
+        _endPoint = Mathf.Lerp(downUp.x, downUp.y, 0.3f);
+    }
     void Update()
     {
         transform.position += moveSpeed * Time.deltaTime * Vector3.down;
         transform.Rotate(rotationSpeed*Time.deltaTime*Vector3.forward);
-        if (transform.position.y<-2f)
+        if (transform.position.y< _endPoint)
         {
             boxCollider.enabled=false;
             transform.localScale += Vector3.one*Time.deltaTime*-5;
             if (transform.localScale.x<0.1f)
             {
+                points = 0;
                 Destroy(gameObject);
             }
         }
@@ -36,9 +45,12 @@ public class Asteroid : MonoBehaviour
 
     private void OnDestroy()
     {
-        Instantiate(explosion, transform.position, Quaternion.identity);
-        GameManager.Instance.punkty += 1;
+        GameManager.Instance.punkty += points;
         UIController.Instance.UpdateScore();
+
+
+        
+
     }
 
 

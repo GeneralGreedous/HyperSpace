@@ -8,7 +8,10 @@ public class PlayerController : MonoBehaviour
     public static PlayerController instance;
     [SerializeField] private List<Transform> MainGuns;
     [SerializeField] private GameObject StandardBullet;
-    public bool shooting = true;
+    public bool shooting = false;
+    public bool moving = false;
+    float shipHeightPos = 0f;
+    
     private void Awake()
     {
         instance = this;
@@ -16,30 +19,44 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(Shoot());
         
+        Vector2 height = GameManager.Instance.downUp;
+        shipHeightPos = Mathf.Lerp(height.x, height.y, 0.1f);
     }
 
-    private void Update()
+    public void startPlayer()
     {
-        if (Input.touchCount > 0) 
+        StartCoroutine(Shoot());
+        StartCoroutine(MovingShip());
+    }
+       
+    IEnumerator MovingShip()
+    {
+        moving = true;
+       
+        while (moving)
         {
-            Touch touch = Input.GetTouch(0); // Get the first touch
-
-            if (touch.phase == TouchPhase.Moved)
+            if (Input.touchCount > 0)
             {
-                Vector3 touchPosition = touch.position;
-                touchPosition.z = 10; // Set a distance from the camera
-                Vector3 worldPosition = Camera.main.ScreenToWorldPoint(touchPosition);
-                Debug.Log(worldPosition);
-                worldPosition.y = -4;
-                transform.position = worldPosition;
+                Touch touch = Input.GetTouch(0); // Get the first touch
+
+                if (touch.phase == TouchPhase.Moved)
+                {
+                    Vector3 touchPosition = touch.position;
+                    touchPosition.z = 10; // Set a distance from the camera
+                    Vector3 worldPosition = Camera.main.ScreenToWorldPoint(touchPosition);
+                    Debug.Log(worldPosition);
+                    worldPosition.y = shipHeightPos;
+                    transform.position = worldPosition;
+                }
             }
+
+            yield return new WaitForEndOfFrame();
         }
     }
-
     IEnumerator Shoot()
     {
+        shooting=true;
         yield return new WaitForSeconds(.5f);
         while (shooting)
         {
