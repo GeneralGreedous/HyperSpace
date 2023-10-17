@@ -49,10 +49,10 @@ public class UIController : MonoBehaviour
         fps = frameDeltaTimeArray.Length / total;
     }
 
-    public void startGame()
+    public void StartGame()
     {
         _ButtonStartGame.gameObject.SetActive(false);
-        GameManager.Instance.startGame();
+        GameManager.Instance.PreStartGame();
     }
 
 }

@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     public Vector2 leftRight;
     public Vector2 downUp;
 
+    [SerializeField] private Material backGround;
+
     private void Awake()
     {
         Instance = this;
@@ -23,6 +25,7 @@ public class GameManager : MonoBehaviour
     {
         CameraFOV();
         useGUILayout = false;
+        backGround.SetFloat("_Speed", 0.1f);
     }
 
     private void CameraFOV()
@@ -32,14 +35,20 @@ public class GameManager : MonoBehaviour
         leftRight = new Vector2(leftDown.x, rightUp.x);
         downUp = new Vector2(leftDown.y, rightUp.y);
     }
-    public void startGame()
+    public void PreStartGame()
+    {
+
+        PlayerController.instance.PreStartPlayer();
+    }
+    public void StartGame()
     {
         StartCoroutine(SpawnAsteroids());
-        PlayerController.instance.startPlayer();
+        PlayerController.instance.StartPlayer();
+        
     }
     IEnumerator SpawnAsteroids()
     {
-        
+
         float left = Mathf.Lerp(leftRight.x, leftRight.y, 0.05f);
         float right = Mathf.Lerp(leftRight.x, leftRight.y, 0.95f);
         while (playing)

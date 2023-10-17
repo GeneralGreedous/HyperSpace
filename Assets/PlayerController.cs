@@ -24,10 +24,39 @@ public class PlayerController : MonoBehaviour
         shipHeightPos = Mathf.Lerp(height.x, height.y, 0.1f);
     }
 
-    public void startPlayer()
+    public void StartPlayer()
     {
         StartCoroutine(Shoot());
         StartCoroutine(MovingShip());
+    }
+
+    public void PreStartPlayer()
+    {
+        StartCoroutine(FlyToPoint());
+    }
+
+    IEnumerator FlyToPoint() 
+    {
+        bool start = false;
+    
+        Vector3 startPoint=gameObject.transform.position;
+        Vector3 endPoint = gameObject.transform.position;
+        endPoint.y = shipHeightPos;
+        float time = 0;
+        while (!start)
+        {
+
+            transform.position = Vector3.Slerp(startPoint, endPoint, time);
+            time += Time.deltaTime;
+            if (time>=1f)
+            {
+                break;
+            }
+            yield return new WaitForEndOfFrame();
+        }
+
+        GameManager.Instance.StartGame();
+        
     }
        
     IEnumerator MovingShip()
@@ -40,7 +69,7 @@ public class PlayerController : MonoBehaviour
             {
                 Touch touch = Input.GetTouch(0); // Get the first touch
 
-                if (touch.phase == TouchPhase.Moved)
+                if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Began)
                 {
                     Vector3 touchPosition = touch.position;
                     touchPosition.z = 10; // Set a distance from the camera

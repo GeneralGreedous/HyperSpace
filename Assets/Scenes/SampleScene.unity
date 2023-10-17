@@ -288,6 +288,7 @@ MonoBehaviour:
   - {fileID: 3655077071168348333, guid: 2a888dda961150c40ad7424b1490954a, type: 3}
   leftRight: {x: 0, y: 0}
   downUp: {x: 0, y: 0}
+  backGround: {fileID: 2100000, guid: de9370c85ebac46458fe4699816cced9, type: 2}
 --- !u!4 &509934632
 Transform:
   m_ObjectHideFlags: 0
@@ -761,7 +762,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 262898357}
         m_TargetAssemblyTypeName: UIController, Assembly-CSharp
-        m_MethodName: startGame
+        m_MethodName: StartGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
