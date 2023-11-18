@@ -11,7 +11,11 @@ public class PlayerController : MonoBehaviour
     public bool shooting = false;
     public bool moving = false;
     float shipHeightPos = 0f;
-    
+
+
+    private Coroutine MoveShipHere;
+    private Coroutine ShootingShipHere;
+
     private void Awake()
     {
         instance = this;
@@ -19,15 +23,19 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        
+
         Vector2 height = GameManager.Instance.downUp;
         shipHeightPos = Mathf.Lerp(height.x, height.y, 0.1f);
     }
 
     public void StartPlayer()
     {
-        StartCoroutine(Shoot());
-        StartCoroutine(MovingShip());
+        ShootingShipHere = StartCoroutine(Shoot());
+        if (MoveShipHere != null)
+        {
+            StopCoroutine(MoveShipHere);
+        }
+        MoveShipHere = StartCoroutine(MovingShip());
     }
 
     public void PreStartPlayer()
@@ -35,12 +43,12 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(FlyToPoint());
     }
 
-    IEnumerator FlyToPoint() 
+    IEnumerator FlyToPoint()
     {
         bool start = false;
-    
-        Vector3 startPoint=gameObject.transform.position;
-        Vector3 endPoint = gameObject.transform.position;
+
+        Vector3 startPoint = new Vector3(0, GameManager.Instance.downUp.x - 2f, 0);
+        Vector3 endPoint = Vector3.zero;
         endPoint.y = shipHeightPos;
         float time = 0;
         while (!start)
@@ -48,21 +56,21 @@ public class PlayerController : MonoBehaviour
 
             transform.position = Vector3.Slerp(startPoint, endPoint, time);
             time += Time.deltaTime;
-            if (time>=1f)
+            if (time >= 1f)
             {
                 break;
             }
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForFixedUpdate();
         }
 
         GameManager.Instance.StartGame();
-        
+
     }
-       
+
     IEnumerator MovingShip()
     {
         moving = true;
-       
+
         while (moving)
         {
             if (Input.touchCount > 0)
@@ -80,20 +88,51 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForFixedUpdate();
         }
     }
+
+    IEnumerator HideShip()
+    {
+        bool start = false;
+
+        Vector3 endPoint = new Vector3(0, GameManager.Instance.downUp.x - 2f, 0);
+        Vector3 startPoint = transform.position;
+        float time = 0;
+        while (!start)
+        {
+
+            transform.position = Vector3.Slerp(startPoint, endPoint, time);
+            time += Time.deltaTime;
+            if (time >= 1f)
+            {
+                break;
+            }
+            yield return new WaitForEndOfFrame();
+        }
+
+        MoveShipHere = null;
+        yield return new WaitForEndOfFrame();
+    }
+
     IEnumerator Shoot()
     {
-        shooting=true;
+        shooting = true;
         yield return new WaitForSeconds(.5f);
         while (shooting)
         {
             foreach (Transform trans in MainGuns)
             {
-                Instantiate(StandardBullet, trans.position,Quaternion.Euler(0,0,90));
+                Instantiate(StandardBullet, trans.position, Quaternion.Euler(0, 0, 90));
             }
             yield return new WaitForSeconds(.5f);
         }
+    }
+
+    public void StopCoritines()
+    {
+        StopCoroutine(MoveShipHere);
+        StopCoroutine(ShootingShipHere);
+        MoveShipHere = StartCoroutine(HideShip());
     }
 }

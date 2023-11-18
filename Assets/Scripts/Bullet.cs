@@ -26,14 +26,19 @@ public class Bullet : MonoBehaviour
         Destroy(gameObject, life);
     }
 
-    
-    
+
+
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Asteroid thisasterois = collision.GetComponent<Asteroid>();
         Instantiate(explosion, transform.position, Quaternion.identity);
-        Destroy(collision.gameObject);
-        Destroy(gameObject);
+        if (thisasterois.Hp > 0)
+        {
+            thisasterois.getDamege(1);
+            Destroy(gameObject);
+        }
+        
     }
 
 }

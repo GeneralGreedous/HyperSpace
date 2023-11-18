@@ -6,8 +6,7 @@ public class Explooosion : MonoBehaviour
 {
     
     public void End()
-    {
-        
+    {        
         Destroy(gameObject);        
     }    
 }
