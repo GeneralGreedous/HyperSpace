@@ -44,6 +44,7 @@ public class Asteroid : MonoBehaviour
             transform.localScale += Vector3.one * Time.deltaTime * -5;
             if (transform.localScale.x < 0.1f)
             {
+                GameManager.Instance.missedAsteroids += 1;
                 SilentDestroy();
             }
         }
@@ -64,7 +65,7 @@ public class Asteroid : MonoBehaviour
     private void OnDestroy()
     {
         GameManager.Instance.punkty += points;
-        GameManager.Instance.RemoveAsterois(this);
+        GameManager.Instance.RemoveAsterois(gameObject);
         UIController.Instance.UpdateScore();
 
         if (points > 0)
@@ -72,10 +73,7 @@ public class Asteroid : MonoBehaviour
             Instantiate(explosion, transform.position, Quaternion.identity);
 
         }
-        else
-        {
-            GameManager.Instance.missedAsteroids += 1;
-        }
+        
 
     }
     private void UptadeColor()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class GameManager : MonoBehaviour
 {
@@ -21,7 +22,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private float timeToPlay = 60f;
 
-    private List<Asteroid> asteroids;
+    private List<GameObject> asteroids;
 
     private Coroutine spawnAsteroidsHere;
 
@@ -49,7 +50,7 @@ public class GameManager : MonoBehaviour
     }
     public void PreStartGame()
     {
-        asteroids=new List<Asteroid>();
+        asteroids = new List<GameObject>();
         PlayerController.instance.PreStartPlayer();
     }
     public void StartGame()
@@ -60,13 +61,13 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public void RemoveAsterois(Asteroid asteroidd)
+    public void RemoveAsterois(GameObject asteroidd)
     {
         if (asteroids.Contains(asteroidd))
         {
             asteroids.Remove(asteroidd);
             // Optionally, you might also want to destroy gaobj1 if you no longer need it
-            
+
         }
     }
     IEnumerator SpawnAsteroids()
@@ -89,7 +90,7 @@ public class GameManager : MonoBehaviour
     IEnumerator StartTime()
     {
         float time = timeToPlay;
-        while (time >0)
+        while (time > 0)
         {
             time -= Time.deltaTime;
             UIController.Instance.UpdateTime(time);
@@ -103,8 +104,10 @@ public class GameManager : MonoBehaviour
         endMissedAsteroids = missedAsteroids;
         punkty = 0;
         missedAsteroids = 0;
-        UIController.Instance.UptadeEndTime(endPoints, endMissedAsteroids);
+        SaveHighScore(endPoints);
+        UIController.Instance.UptadeEndTime(endPoints, endMissedAsteroids, GetHighScore());
         StopsCoroutines();
+
         yield return new WaitForFixedUpdate();
 
 
@@ -117,9 +120,9 @@ public class GameManager : MonoBehaviour
         Vector3 spawnPosition = new Vector3(randomNumber2, 7, 0);
         Asteroid thisAsteroid = Instantiate(AsteroidsList[randomNumber], spawnPosition, Quaternion.identity);
         float fallingSpeed = Random.Range(0.5f, 5f);
-        float rotatingSpeed = Random.Range(10f, 100f);
+        float rotatingSpeed = Random.Range(-10f, 100f);
         thisAsteroid.SetSpeedsStats(new Vector2(fallingSpeed, rotatingSpeed), Random.Range(1, 4));
-        asteroids.Add(thisAsteroid);
+        asteroids.Add(thisAsteroid.gameObject);
     }
 
 
@@ -129,10 +132,24 @@ public class GameManager : MonoBehaviour
         StopCoroutine(spawnAsteroidsHere);
         foreach (var item in asteroids)
         {
-            item.SilentDestroy();
+            //Destroy(item);
+            item.GetComponent<Asteroid>().SilentDestroy();
         }
         UIController.Instance.ShowEndScreens(true);
-        
+
+    }
+
+    public void SaveHighScore(int score)
+    {
+        if (PlayerPrefs.GetInt("maxScore") < score)
+        {
+            PlayerPrefs.SetInt("maxScore", score);
+        }
+    }
+
+    public int GetHighScore()
+    {
+        return PlayerPrefs.GetInt("maxScore");
     }
 
 }

@@ -46,9 +46,9 @@ public class UIController : MonoBehaviour
         timeRemain.text="Time \n"+ myStringTime;
     }
 
-    public void UptadeEndTime(int points,int missed)
+    public void UptadeEndTime(int points,int missed, int maxScore)
     {
-        endText.text = $"score: {points} \n missed asteroids: {missed}";
+        endText.text = $"MAX SCORE {maxScore}\nscore: {points} \nmissed asteroids: {missed}";
     }
 
     private void Update()

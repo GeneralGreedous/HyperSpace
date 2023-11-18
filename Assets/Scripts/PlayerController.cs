@@ -125,7 +125,7 @@ public class PlayerController : MonoBehaviour
             {
                 Instantiate(StandardBullet, trans.position, Quaternion.Euler(0, 0, 90));
             }
-            yield return new WaitForSeconds(.5f);
+            yield return new WaitForSeconds(.3f);
         }
     }
 
